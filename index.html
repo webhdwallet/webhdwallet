@@ -104,6 +104,54 @@
       </div>
     </div>
 
+<div class="panel panel-default">
+  <div class="panel-body">
+    Total balance found: 
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Receiving Addresses</div>
+  <div class="panel-body">
+    <p>Receiving addresses are the addresses found on the external address chain (i.e. m/i'/0/k in BIP32 terminology).
+    These should be used to to give to other people, where they can send payments.</p>
+  </div>
+
+  <!-- Table -->
+  <table class="table">
+    <thead>
+      <th>#</th>
+      <th>Address</th>
+      <th>Balance</th>
+      <th>Tx#</th>
+    </thead>
+    <tbody id="receive_table">
+    </tbody>
+  </table>
+</div>
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Change Addresses</div>
+  <div class="panel-body">
+    <p>Change addresses are the addresses found on the internal address chain (i.e. m/i'/1/k in BIP32 terminology).
+    These should be used just by the wallet software (e.g. this page) to generate new address every time you have change from
+    an outgoing transaction. Should not use them directly.</p>
+  </div>
+
+  <!-- Table -->
+  <table class="table">
+    <thead>
+      <th>#</th>
+      <th>Address</th>
+      <th>Balance</th>
+      <th>Tx#</th>
+    </thead>
+    <tbody id="change_table">
+    </tbody>
+  </table>
+</div>
 
 <!--     <input></input> -->
 <!--     <button onclick="generate()">Generate addresses</button> -->

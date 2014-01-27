@@ -27,6 +27,10 @@ hidden {
     width: 80.5%;
 }
 
+.address-field {
+    font-family: monospace;
+}
+
 .progress .progress-bar {
     -webkit-transition: none;
     -moz-transition: none;

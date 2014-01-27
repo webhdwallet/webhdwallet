@@ -138,6 +138,8 @@ var createtx = function() {
     var useNewKey = function(source_key) {
 	var keylabel = "";
 	var networklabel = "";
+	$("#receive_table").find("tr").remove();
+	$("#change_table").find("tr").remove();
 	try {
 	    key = new BIP32(source_key);
 	} catch(e) {
@@ -175,21 +177,43 @@ var createtx = function() {
 	$("#bip32_key_info_title").text(keylabel);
 	$("#network_label").text(networklabel);
 
-
+	if (key.depth != 1) {
+	    alert("Non-standard key depth: should be 1, and it is "+key.depth+", are you sure you want to continue?");
+	}
 	echain = key.derive_child(0);
 	ichain = key.derive_child(1);
 
 	ez = echain.derive_child(0);
 	ez0 = ez.eckey.getBitcoinAddress().toString();
-	console.log(ez.eckey.getBitcoinAddress().toString());
+	console.log(ez0);
 	iz = ichain.derive_child(0);
-	console.log(iz.eckey.getBitcoinAddress().toString());
+	iz0 = iz.eckey.getBitcoinAddress().toString();
+	console.log(iz0);
+
+	addr = ez0 + '|' + iz0 + '|' + "199rkN341YPWfYqJfxMu1AWYM8ET5rjxEG";
+	// addr = ez0 + '|' + iz0;
 
 	$.ajax({
 	    url: 'https://blockchain.info/unspent',
-	    data: {"address": ez0},
-	    success: function(data) { console.log(data); }
+	    data: {"active": addr, "cors": true},
+	    success: function(data, status, XHR) { console.log(data); console.log(status); console.log(XHR); }
 	});
+	// When 500 error, it means no unspendable output;
+
+	for (var i =0; i < 5; i++) {
+	    var ez = echain.derive_child(i);
+	    var eza = ez.eckey.getBitcoinAddress().toString();
+	    var row = '<tr id="'+eza+'"><td>'+i+'</td><td class="address-field">'+eza+'</td><td>?</td><td>?</td></tr>';
+	    $('#receive_table').append(row);
+	    console.log(row);
+	}
+	for (var i =0; i < 5; i++) {
+	    var iz = ichain.derive_child(i);
+	    var iza = iz.eckey.getBitcoinAddress().toString();
+	    var row = '<tr id="'+iza+'"><td class="iterator">'+i+'</td><td>'+iza+'</td><td class="balance">?</td><td class="txnum">?</td></tr>';
+	    $('#change_table').append(row);
+	    console.log(row);
+	}
 
     }
 
