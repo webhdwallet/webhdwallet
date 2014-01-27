@@ -112,6 +112,29 @@ var createtx = function() {
     return tx
 }
 
+    var parseScriptString = function(scriptString) {
+	var opm = Bitcoin.Opcode.map;
+	var inst = scriptString.split(" ");
+	var bytescript = [];
+	for (thisinst in inst) {
+	    var part = inst[thisinst];
+	    if ("string" !== typeof part) {
+		continue;
+	    }
+	    if ((part.length > 3) && (part.slice(0, 3) == 'OP_')) {
+		for (name in opm) {
+		    if (name == part) {
+			bytescript.push(opm[name])
+		    }
+		}
+	    } else if (part.length > 0) {
+		bytescript.push(Bitcoin.Util.hexToBytes(part));
+	    }
+	}
+	return bytescript;
+    }
+
+
     var useNewKey = function(source_key) {
 	var keylabel = "";
 	var networklabel = "";
@@ -151,6 +174,23 @@ var createtx = function() {
 	}
 	$("#bip32_key_info_title").text(keylabel);
 	$("#network_label").text(networklabel);
+
+
+	echain = key.derive_child(0);
+	ichain = key.derive_child(1);
+
+	ez = echain.derive_child(0);
+	ez0 = ez.eckey.getBitcoinAddress().toString();
+	console.log(ez.eckey.getBitcoinAddress().toString());
+	iz = ichain.derive_child(0);
+	console.log(iz.eckey.getBitcoinAddress().toString());
+
+	$.ajax({
+	    url: 'https://blockchain.info/unspent',
+	    data: {"address": ez0},
+	    success: function(data) { console.log(data); }
+	});
+
     }
 
     function onInput(id, func) {
