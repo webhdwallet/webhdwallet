@@ -1,6 +1,131 @@
+<!DOCTYPE html>
 <html>
+<head>
+  <title>Web HD Wallet (BIP32)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="web hierarchical deterministic wallet manager" name="description" />
 
+  <link href="css/bootstrap.css" rel="stylesheet" media="screen">
+  <link href="css/bootstrap-theme.css" rel="stylesheet" media="screen">
+  <link href="css/webhdwallet.css" rel="stylesheet" media="screen">
+  <link id="page_favicon" href="img/favicon.ico" rel="icon" type="image/x-icon" />
+</head>
+<body>
+
+  <nav class="navbar navbar-default" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	<span class="sr-only">Toggle navigation</span>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">WebHDWallet (Alpha)</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+	<li class="active"><a href="#">Home</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </nav>
+
+  <div class="container">
+    <h1>Web Hierarchical Deterministic (HD) Wallet</h1>
+    <p>Implementing the Hierarchical Deterministic Wallet proposal <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki">BIP32</a>, with the aim of creating easy to use, secure, and powerful tools for managing HD wallets and the funds within.</p>
+
+    <div class="alert alert-warning">This software has just started development, please use with care, and at least take a look at the <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki">original BIP32 description</a>.</div>
+
+    <div class="tab-content">
+      <div class="tab-pane fade in active" id="bip32">
+	<form action="/" class="form-horizontal" method="get">
+	  <fieldset>
+            <legend>HD wallet manager</legend>
+
+	    <div class="form-group" title="">
+              <label class="col-lg-2 control-label" for="bip32_source_key">BIP32 Extended Key</label>
+              <div class="col-lg-10">
+		<div class="row">
+		  <div class="col-lg-12">
+		    <input type="text" id="bip32_source_key" class="form-control" placeholder="xpub... or xpriv... or tpub... or so on">
+		  </div>
+		</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="bip32_key_info">Key Info</label>
+              <div class="col-lg-10">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <label class="control-label" id="bip32_key_info_title"></label> <span id="network_label" class="label label-info"></span>
+                  </div>
+                </div>
+                <br />
+                  <div class="row">
+                    <div class="form-group">
+                      <div class="col-lg-2 control-label">Version</div>
+                      <div class="col-lg-10 col-lg-10-inner">
+                          <input class="form-control" id="bip32_key_info_version" disabled />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group">
+                      <div class="col-lg-2 control-label">Depth</div>
+                      <div class="col-lg-10 col-lg-10-inner">
+                          <input class="form-control" id="bip32_key_info_depth" disabled />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group">
+                      <div class="col-lg-2 control-label">Parent Fingerprint</div>
+                      <div class="col-lg-10 col-lg-10-inner">
+                          <input class="form-control" id="bip32_key_info_parent_fingerprint" disabled />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group">
+                      <div class="col-lg-2 control-label">Child Index</div>
+                      <div class="col-lg-10 col-lg-10-inner">
+                          <input class="form-control" id="bip32_key_info_child_index" disabled />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+	  </fieldset>
+	</form>
+      </div>
+    </div>
+
+
+<!--     <input></input> -->
+<!--     <button onclick="generate()">Generate addresses</button> -->
+<!--     <button onclick="createtx()">Create Transaction</button> -->
+<!--     <div id=results></div> -->
+
+
+
+    <footer>
+      <p>
+        The contents of this page are released under the <a href="http://opensource.org/licenses/mit-license.php">MIT License</a>.<br>Donations welcome at <a href="bitcoin:16xkGHKk5xn4KcTFbhAx5fBp9MMLTmktum">16xkGHKk5xn4KcTFbhAx5fBp9MMLTmktum</a>
+        <span class="pull-right">Powered by <a href="http://pages.github.com">GitHub Pages</a> &nbsp;
+          <a href="https://github.com/webhdwallet/webhdwallet.github.io">GitHub Repository</a> &nbsp;
+          <!-- <a href="https://github.com/bip32/bip32.github.io/archive/master.zip">Download ZIP</a> -->
+        </span>
+      </p>
+    </footer>
+  </div>
+
+<!-- Now the scripts -->
   <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.js"></script>
   <!-- <script src="js/bootstrap.min.js"></script> -->
 
   <!-- <script src="js/bitcoinjs-min.js"></script> -->
@@ -15,15 +140,5 @@
   <script src="js/sha512.js"></script>
 
   <script src="js/webhdwallet.js"></script>
-
-<body>
-
-<input></input>
-<button onclick="generate()">Generate addresses</button>
-<button onclick="createtx()">Create Transaction</button>
-
-<div id=results>
-
-</div>
 </body>
 </html>

@@ -1,6 +1,14 @@
+(function($) {
+
 <!-- var pubkey = "tpubDAgMac26hDGuMUd226dRL5Csx3xJYNgXcH1Vrr8K7pPkkrbdG6qRE2AotjohzyKRJJbRjdAsxog2htE5Rcz5ZrfLELUe5GP5HrTj6Eoyq27"; -->
 
-Bitcoin.setNetwork('test');
+var MAINNET_PUBLIC = 0x0488b21e;
+var MAINNET_PRIVATE = 0x0488ade4;
+var TESTNET_PUBLIC = 0x043587cf;
+var TESTNET_PRIVATE = 0x04358394;
+
+    var key = null;
+    var network = null;
 
 var key = "tprv8dzKSByrYqbEU1bE8SxpvfYmP2SNP3Vd2yQiaL61hYbMvNLrdi1q3XYwicWPfj1Vg53w8uctzDe88KvMazWhURjTzEowtDSbsALeX6spBqd"
 
@@ -103,3 +111,70 @@ var createtx = function() {
 
     return tx
 }
+
+    var useNewKey = function(source_key) {
+	var keylabel = "";
+	var networklabel = "";
+	try {
+	    key = new BIP32(source_key);
+	} catch(e) {
+	    console.log(source_key);
+	    console.log("Incorrect key?");
+	}
+	if (key) {
+	    switch (key.version) {
+	    case MAINNET_PUBLIC:
+		keylabel = "Public key";
+		network = 'prod';
+		networklabel = "Bitcoin Mainnet";
+		break;
+	    case MAINNET_PRIVATE:
+		keylabel = "Private key";
+		network = 'prod';
+		networklabel = "Bitcoin Mainnet";
+		break;
+	    case TESTNET_PUBLIC:
+		keylabel = "Public key";
+		network = 'test';
+		networklabel = "Bitcoin Testnet";
+		break;
+	    case TESTNET_PRIVATE:
+		keylabel = "Private key";
+		network = 'test';
+		networklabel = "Bitcoin Testnet";
+		break;
+	    default:
+		key = null;
+		console.log("Unknown key version");
+	    }
+	    Bitcoin.setNetwork(network);
+	}
+	$("#bip32_key_info_title").text(keylabel);
+	$("#network_label").text(networklabel);
+    }
+
+    function onInput(id, func) {
+        $(id).bind("input keyup keydown keypress change blur", function() {
+            if ($(this).val() != jQuery.data(this, "lastvalue")) {
+                func();
+            }
+            jQuery.data(this, "lastvalue", $(this).val());
+        });
+        $(id).bind("focus", function() {
+            jQuery.data(this, "lastvalue", $(this).val());
+        });
+    }
+
+    var onUpdateSourceKey = function () {
+	var source_key = $("#bip32_source_key").val();
+	useNewKey(source_key);
+    }
+
+
+    $(document).ready(function() {
+
+        onInput("#bip32_source_key", onUpdateSourceKey);
+
+    });
+
+})(jQuery);
