@@ -8,12 +8,16 @@ var TESTNET_PRIVATE = 0x04358394;
 var RECEIVE_CHAIN = 0;
 var CHANGE_CHAIN = 1;
 
+var GAP = 5;  // how many extra addresses to generate
+
     var key = null;
     var network = null;
-    var addresses = null;
+    var addresses = {"receive": {},  "change": {}};;
     var balance = 0;
     var pending = 0;
     var unspent = {};
+    var lastone = {"receive": GAP, "change": GAP};
+    var chains = {"receive": null, "change": null};
 
     var clearData = function() {
 	key = null;
@@ -22,6 +26,8 @@ var CHANGE_CHAIN = 1;
 	balance = 0;
 	pending = 0;
 	unspent = {};
+	lastone = {"receive": GAP, "change": GAP};
+	var chains = {"receive": null, "change": null};
 
 	$("#receive_table").find("tr").remove();
 	$("#change_table").find("tr").remove();
@@ -65,7 +71,6 @@ var queue = new Queue(function (task, callback) {
     if (task.callback)
       task.callback();
     // call the buffer callback.
-    console.log(task, ' done');
     callback();
   });
 });
@@ -190,33 +195,37 @@ var createtx = function() {
     };
 
     var goodUpdate = function(addr) {
-	return function(data, textStatus, jqXHR) {
-	    console.log(addr);
-	    unspent[addr] = data.unspent_outputs;
-	    thisbalance = 0
-	    for (var x=0; x < unspent[addr].length; x++) {
-		console.log(unspent[addr]);
-		thisbalance += unspent[addr][x].value;
-	    }
-	    balance += thisbalance;
-	    $("#balance_display").text(balance/100000); // Satoshi to mBTC
-	    $("#"+addr).children(".balance").text(thisbalance/100000);
-	    console.log($('#'+addr).children(".balance"));
-	};
+    	return function(data, textStatus, jqXHR) {
+    	    console.log(addr);
+    	    unspent[addr] = data.unspent_outputs;
+    	    thisbalance = 0;
+    	    thispending = 0;
+    	    for (var x=0; x < unspent[addr].length; x++) {
+    		if (confirmations === 0) {
+    		    thispending += unspent[addr][x].value;
+    		} else {
+    		    thisbalance += unspent[addr][x].value;
+    		}
+    	    }
+    	    balance += thisbalance;
+    	    $("#balance_display").text(balance/100000); // Satoshi to mBTC
+    	    $("#"+addr).children(".balance").text(thisbalance/100000);
+    	};
     }
     var noUpdate = function(addr) {
-	return function(jqXHR, textStatus, errorThrown) {
-	    if (jqXHR.status != 500) {
-		console.log(errorThrown);
-	    } else {
-		$("#"+addr).children(".balance").text(0);
-	    }
-	}
+    	return function(jqXHR, textStatus, errorThrown) {
+    	    if (jqXHR.status != 500) {
+    		console.log(errorThrown);
+    	    } else {
+    		$("#"+addr).children(".balance").text(0);
+    	    }
+    	}
     }
-
-    var updateBalances = function() {
-	var addresslist = Object.keys(addresses.receive);
-	addresslist = addresslist.concat(Object.keys(addresses.change));
+    var reUpdateBalances = function() {
+	var addresslist = [];
+	for (var k in addresses) {
+	    addresslist = addresslist.concat(Object.keys(addresses[k]));
+	}
 	balance = 0;
 	for (var i = 0; i < addresslist.length; i++) {
 	    var addr = addresslist[i]
@@ -231,6 +240,86 @@ var createtx = function() {
 		.always(function() {});
 	}
     }
+
+    var gotUnspent = function(chain, index, addr) {
+	return function(data, textStatus, jqXHR) {
+	    unspent[addr] = data.unspent_outputs;
+	    thisbalance = 0
+	    for (var x=0; x < unspent[addr].length; x++) {
+		console.log(unspent[addr]);
+		thisbalance += unspent[addr][x].value;
+	    }
+	    balance += thisbalance;
+	    $("#balance_display").text(balance/100000); // Satoshi to mBTC
+	    $("#"+addr).children(".balance").text(thisbalance/100000);
+	    console.log($('#'+addr).children(".balance"));
+	};
+    }
+    var gotUnspentError = function(chain, index, addr) {
+	return function(jqXHR, textStatus, errorThrown) {
+	    if (jqXHR.status != 500) {
+		console.log(errorThrown);
+	    } else {
+		$("#"+addr).children(".balance").text(0);
+	    }
+	}
+    }
+
+    var checkReceived = function(chain, index, addr, callback) {
+    	return function(data, textStatus, jqXHR) {
+    	    if (parseInt(data) > 0) {
+		var newlast = Math.max(index+GAP+1, lastone[chain]);
+		lastone[chain] = newlast;
+		queue.append(generateAddress(chain, index+1));
+
+		var jqxhr2 = $.get('https://blockchain.info/unspent',
+			      {"active": addr,
+			       "cors": true,
+			       "json": true}
+				 )
+		    .done(gotUnspent(chain, index, addr))
+		    .fail(gotUnspentError(chain, index, addr))
+		    .always(function(){});
+		callback();
+    	    } else {
+		$("#balance_display").text(balance/100000); // Satoshi to mBTC
+		$("#"+addr).children(".balance").text(0);
+		if (index < lastone[chain]-1) {
+		    queue.append(generateAddress(chain, index+1));
+		}
+		callback();
+	    }
+    	}
+    }
+
+    var updateBalance = function(chain, index, addr, callback) {
+    	var jqxhr = $.get('https://blockchain.info/q/getreceivedbyaddress/'+addr, {'cors': true})
+    		.done(checkReceived(chain, index, addr, callback));
+
+    }
+
+// Simple task to generate addresses and query them;
+var generateAddress = function(chain, index) {
+    return function(callback) {
+	if (chains[chain]) {
+	    var childkey = chains[chain].derive_child(index);
+	    var childaddr = childkey.eckey.getBitcoinAddress().toString();
+
+	    var qrcode = ''
+	    if (chain === 'receive') {
+		qrcode = ' <span class="open-qroverlay glyphicon glyphicon-qrcode" data-toggle="modal" data-target="#qroverlay" data-addr="'+childaddr+'"></span>';
+	    }
+	    var row = '<tr id="'+childaddr+'"><td class="iterator">'+index+'</td><td class="address-field">'+childaddr+qrcode+'</td><td class="balance">?</td></tr>';
+	    $('#'+chain+'_table').append(row);
+	    addresses[chain][childaddr] = childkey;
+
+	    updateBalance (chain, index, childaddr, callback);
+	} else {
+	    callback();
+	}
+    }
+}
+
 
     var useNewKey = function(source_key) {
 	var keylabel = "";
@@ -278,27 +367,31 @@ var createtx = function() {
 	if (key.depth != 1) {
 	    alert("Non-standard key depth: should be 1, and it is "+key.depth+", are you sure you want to use that?");
 	}
-	echain = key.derive_child(RECEIVE_CHAIN);
-	ichain = key.derive_child(CHANGE_CHAIN);
 
-	for (var i =0; i < 5; i++) {
-	    var ez = echain.derive_child(i);
-	    var eza = ez.eckey.getBitcoinAddress().toString();
-	    var row = '<tr id="'+eza+'"><td class="iterator">'+i+'</td><td class="address-field">'+eza+' <span class="open-qroverlay glyphicon glyphicon-qrcode" data-toggle="modal" data-target="#qroverlay" data-addr="'+eza+'"></span></td><td class="balance">?</td></tr>';
-	    $('#receive_table').append(row);
-	    addresses.receive[eza] = ez;
-	}
-	keys_receive = Object.keys(addresses.receive);
-	for (var i =0; i < 5; i++) {
-	    var iz = ichain.derive_child(i);
-	    var iza = iz.eckey.getBitcoinAddress().toString();
-	    var row = '<tr id="'+iza+'"><td class="iterator">'+i+'</td><td class="address-field">'+iza+'</td><td class="balance">?</td></tr>';
-	    $('#change_table').append(row);
-	    addresses["change"][iza] = iz;
-	}
-	keys_change = Object.keys(addresses.change);
+	chains["receive"] = key.derive_child(RECEIVE_CHAIN);
+	chains["change"] = key.derive_child(CHANGE_CHAIN);
 
-	updateBalances();
+	queue.append(generateAddress("receive", 0));
+	queue.append(generateAddress("change", 0));
+
+	// for (var i =0; i < 5; i++) {
+	//     var ez = echain.derive_child(i);
+	//     var eza = ez.eckey.getBitcoinAddress().toString();
+	//     var row = '<tr id="'+eza+'"><td class="iterator">'+i+'</td><td class="address-field">'+eza+' <span class="open-qroverlay glyphicon glyphicon-qrcode" data-toggle="modal" data-target="#qroverlay" data-addr="'+eza+'"></span></td><td class="balance">?</td></tr>';
+	//     $('#receive_table').append(row);
+	//     addresses.receive[eza] = ez;
+	// }
+	// keys_receive = Object.keys(addresses.receive);
+	// for (var i =0; i < 5; i++) {
+	//     var iz = ichain.derive_child(i);
+	//     var iza = iz.eckey.getBitcoinAddress().toString();
+	//     var row = '<tr id="'+iza+'"><td class="iterator">'+i+'</td><td class="address-field">'+iza+'</td><td class="balance">?</td></tr>';
+	//     $('#change_table').append(row);
+	//     addresses["change"][iza] = iz;
+	// }
+	// keys_change = Object.keys(addresses.change);
+
+	// updateBalances();
     };
 
     function onInput(id, func) {
