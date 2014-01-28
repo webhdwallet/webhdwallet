@@ -48,7 +48,7 @@
               <div class="col-lg-10">
 		<div class="row">
 		  <div class="col-lg-12">
-		    <input type="text" id="bip32_source_key" class="form-control" placeholder="xpub... or xpriv... or tpub... or so on">
+		    <input type="text" id="bip32_source_key" class="form-control" placeholder="xpub... or xpriv...">
 		  </div>
 		</div>
               </div>
@@ -60,40 +60,6 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <label class="control-label" id="bip32_key_info_title"></label> <span id="network_label" class="label label-info"></span>
-                  </div>
-                </div>
-                <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <div class="col-lg-2 control-label">Version</div>
-                      <div class="col-lg-10 col-lg-10-inner">
-                          <input class="form-control" id="bip32_key_info_version" disabled />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="form-group">
-                      <div class="col-lg-2 control-label">Depth</div>
-                      <div class="col-lg-10 col-lg-10-inner">
-                          <input class="form-control" id="bip32_key_info_depth" disabled />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="form-group">
-                      <div class="col-lg-2 control-label">Parent Fingerprint</div>
-                      <div class="col-lg-10 col-lg-10-inner">
-                          <input class="form-control" id="bip32_key_info_parent_fingerprint" disabled />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="form-group">
-                      <div class="col-lg-2 control-label">Child Index</div>
-                      <div class="col-lg-10 col-lg-10-inner">
-                          <input class="form-control" id="bip32_key_info_child_index" disabled />
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -114,7 +80,7 @@
   <!-- Default panel contents -->
   <div class="panel-heading">Receiving Addresses</div>
   <div class="panel-body">
-    <p>Receiving addresses are the addresses found on the external address chain (i.e. m/i'/0/k in BIP32 terminology).
+    <p>Receiving addresses are the addresses found on the external address chain (i.e. <span style="font-family:monospace">m/i'/0/k</span> in BIP32 terminology).
     These should be used to to give to other people, where they can send payments.</p>
   </div>
 
@@ -135,7 +101,7 @@
   <!-- Default panel contents -->
   <div class="panel-heading">Change Addresses</div>
   <div class="panel-body">
-    <p>Change addresses are the addresses found on the internal address chain (i.e. m/i'/1/k in BIP32 terminology).
+    <p>Change addresses are the addresses found on the internal address chain (i.e. <span style="font-family:monospace">m/i'/1/k</span> in BIP32 terminology).
     These should be used just by the wallet software (e.g. this page) to generate new address every time you have change from
     an outgoing transaction. Should not use them directly.</p>
   </div>
