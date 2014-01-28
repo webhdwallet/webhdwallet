@@ -276,7 +276,7 @@ var createtx = function() {
 	$("#network_label").text(networklabel);
 
 	if (key.depth != 1) {
-	    alert("Non-standard key depth: should be 1, and it is "+key.depth+", are you sure you want to continue?");
+	    alert("Non-standard key depth: should be 1, and it is "+key.depth+", are you sure you want to use that?");
 	}
 	echain = key.derive_child(RECEIVE_CHAIN);
 	ichain = key.derive_child(CHANGE_CHAIN);
