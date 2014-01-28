@@ -241,7 +241,7 @@ var createtx = function() {
 	for (var i =0; i < 5; i++) {
 	    var ez = echain.derive_child(i);
 	    var eza = ez.eckey.getBitcoinAddress().toString();
-	    var row = '<tr id="'+eza+'"><td class="iterator">'+i+'</td><td class="address-field">'+eza+' <span class="open-qroverlay glyphicon glyphicon-qrcode" data-toggle="modal" data-target="#qroverlay" data-addr="'+eza+'"></span></td><td class="balance">?</td><td class="txnum">?</td></tr>';
+	    var row = '<tr id="'+eza+'"><td class="iterator">'+i+'</td><td class="address-field">'+eza+' <span class="open-qroverlay glyphicon glyphicon-qrcode" data-toggle="modal" data-target="#qroverlay" data-addr="'+eza+'"></span></td><td class="balance">?</td></tr>';
 	    $('#receive_table').append(row);
 	    addresses.receive[eza] = ez;
 	}
@@ -249,7 +249,7 @@ var createtx = function() {
 	for (var i =0; i < 5; i++) {
 	    var iz = ichain.derive_child(i);
 	    var iza = iz.eckey.getBitcoinAddress().toString();
-	    var row = '<tr id="'+iza+'"><td class="iterator">'+i+'</td><td class="address-field">'+iza+'</td><td class="balance">?</td><td class="txnum">?</td></tr>';
+	    var row = '<tr id="'+iza+'"><td class="iterator">'+i+'</td><td class="address-field">'+iza+'</td><td class="balance">?</td></tr>';
 	    $('#change_table').append(row);
 	    addresses["change"][iza] = iz;
 	}
