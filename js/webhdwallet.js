@@ -30,6 +30,49 @@ var CHANGE_CHAIN = 1;
 
 var ops = Bitcoin.Opcode.map;
 
+//------------
+// From https://gist.github.com/paolorossi/5747533
+function Queue(handler) {
+  var queue = [];
+
+  function run() {
+    var callback = function () {
+      queue.shift();
+      // when the handler says it's finished (i.e. runs the callback)
+      // We check for more tasks in the queue and if there are any we run again
+      if (queue.length > 0) {
+        run();
+      }
+    }
+    // give the first item in the queue & the callback to the handler
+    handler(queue[0], callback);
+  }
+
+  // push the task to the queue. If the queue was empty before the task was pushed
+  // we run the task.
+  this.append = function (task) {
+    queue.push(task);
+    if (queue.length === 1) {
+      run();
+    }
+  }
+}
+// small handler that launch task and calls the callback
+// when its finished
+var queue = new Queue(function (task, callback) {
+  task(function () {
+    // call an option callback from the task
+    if (task.callback)
+      task.callback();
+    // call the buffer callback.
+    console.log(task, ' done');
+    callback();
+  });
+});
+//------------
+
+
+
 var getAddr = function(key) {
     var hash160 = key.eckey.getPubKeyHash();
     var addr = new Bitcoin.Address(hash160);
