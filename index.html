@@ -106,7 +106,7 @@
 
 <div class="panel panel-default">
   <div class="panel-body">
-    Total balance found: 
+    Total balance found: <span id="balance_display">?</span> mBTC  <!-- <button class="btn">Refresh</button> -->
   </div>
 </div>
 
@@ -123,7 +123,7 @@
     <thead>
       <th>#</th>
       <th>Address</th>
-      <th>Balance</th>
+      <th>Balance(mBTC)</th>
       <th>Tx#</th>
     </thead>
     <tbody id="receive_table">
@@ -145,7 +145,7 @@
     <thead>
       <th>#</th>
       <th>Address</th>
-      <th>Balance</th>
+      <th>Balance(mBTC)</th>
       <th>Tx#</th>
     </thead>
     <tbody id="change_table">
@@ -174,14 +174,6 @@
 <!-- Now the scripts -->
   <script src="js/jquery.js"></script>
   <script src="js/bootstrap.js"></script>
-  <!-- <script src="js/bootstrap.min.js"></script> -->
-
-  <!-- <script src="js/bitcoinjs-min.js"></script> -->
-  <!-- <script src="js/modsqrt.js"></script> -->
-  <!-- <script src="js/sha512.js"></script> -->
-  <!-- <script src="js/bip32.js"></script> -->
-  <!-- <script src="js/tx.js"></script> -->
-
   <script src="js/sjcl.js"></script>
   <script src="js/bitcoinjs-lib.js"></script>
   <script src="js/modsqrt.js"></script>

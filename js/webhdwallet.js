@@ -1,7 +1,5 @@
 (function($) {
 
-<!-- var pubkey = "tpubDAgMac26hDGuMUd226dRL5Csx3xJYNgXcH1Vrr8K7pPkkrbdG6qRE2AotjohzyKRJJbRjdAsxog2htE5Rcz5ZrfLELUe5GP5HrTj6Eoyq27"; -->
-
 var MAINNET_PUBLIC = 0x0488b21e;
 var MAINNET_PRIVATE = 0x0488ade4;
 var TESTNET_PUBLIC = 0x043587cf;
@@ -9,13 +7,11 @@ var TESTNET_PRIVATE = 0x04358394;
 
     var key = null;
     var network = null;
-
-var key = "tprv8dzKSByrYqbEU1bE8SxpvfYmP2SNP3Vd2yQiaL61hYbMvNLrdi1q3XYwicWPfj1Vg53w8uctzDe88KvMazWhURjTzEowtDSbsALeX6spBqd"
+    var addresses = null;
+    var balance = 0;
+    var unspent = {};
 
 var ops = Bitcoin.Opcode.map;
-
-var childs = new Array();
-var addresses = new Array();
 
 var getAddr = function(key) {
     var hash160 = key.eckey.getPubKeyHash();
@@ -24,7 +20,6 @@ var getAddr = function(key) {
     return addr.toString();
 }
 
-var b = new BIP32(key);
 var generate = function() {
 
     for (var i=0; i<12; i++) {
@@ -33,25 +28,25 @@ var generate = function() {
         addresses.push(getAddr(c));
         $("#results").append(getAddr(c)+"<br>");
     }
-    
+
 }
 
 var hashFromAddr = function(string) {
 
     var bytes = Bitcoin.Base58.decode(string);
-    var hash = bytes.slice(0, 21);  
+    var hash = bytes.slice(0, 21);
     var checksum = Crypto.SHA256(Crypto.SHA256(hash, {asBytes: true}), {asBytes: true});
-  
+
     if (checksum[0] != bytes[21] ||
         checksum[1] != bytes[22] ||
         checksum[2] != bytes[23] ||
         checksum[3] != bytes[24]) {
       throw "Checksum validation failed!";
     }
-  
+
     this.version = hash.shift();
     this.hash = hash;
-    return hash
+    return hash;
 }
 
 var createOutScript = function(address) {
@@ -109,7 +104,7 @@ var createtx = function() {
 
     tx.signWithKey(in0.eckey)
 
-    return tx
+    return tx;
 }
 
     var parseScriptString = function(scriptString) {
@@ -132,12 +127,57 @@ var createtx = function() {
 	    }
 	}
 	return bytescript;
+    };
+
+    var goodUpdate = function(addr) {
+	return function(data, textStatus, jqXHR) {
+	    console.log(addr);
+	    unspent[addr] = data.unspent_outputs;
+	    thisbalance = 0
+	    for (var x=0; x < unspent[addr].length; x++) {
+		console.log(unspent[addr]);
+		thisbalance += unspent[addr][x].value;
+	    }
+	    balance += thisbalance;
+	    $("#balance_display").text(balance/100000); // Satoshi to mBTC
+	    $("#"+addr).children(".balance").text(thisbalance/100000);
+	    console.log($('#'+addr).children(".balance"));
+	};
+    }
+    var noUpdate = function(addr) {
+	return function(jqXHR, textStatus, errorThrown) {
+	    if (jqXHR.status != 500) {
+		console.log(errorThrown);
+	    } else {
+		$("#"+addr).children(".balance").text(0);
+	    }
+	}
     }
 
+    var updateBalances = function() {
+	var addresslist = Object.keys(addresses.receive);
+	addresslist = addresslist.concat(Object.keys(addresses.change));
+	balance = 0;
+	for (var i = 0; i < addresslist.length; i++) {
+	    var addr = addresslist[i]
+
+	    var jqxhr = $.get('https://blockchain.info/unspent',
+			      {"active": addr,
+			       "cors": true,
+			       "json": true}
+			     )
+		.done(goodUpdate(addr))
+		.fail(noUpdate(addr))
+		.always(function() {});
+	}
+    }
 
     var useNewKey = function(source_key) {
 	var keylabel = "";
 	var networklabel = "";
+	addresses = {"receive": {},  "change": {}};
+	unspent = {};
+	balance = 0;
 	$("#receive_table").find("tr").remove();
 	$("#change_table").find("tr").remove();
 	try {
@@ -183,39 +223,39 @@ var createtx = function() {
 	echain = key.derive_child(0);
 	ichain = key.derive_child(1);
 
-	ez = echain.derive_child(0);
-	ez0 = ez.eckey.getBitcoinAddress().toString();
-	console.log(ez0);
-	iz = ichain.derive_child(0);
-	iz0 = iz.eckey.getBitcoinAddress().toString();
-	console.log(iz0);
-
-	addr = ez0 + '|' + iz0 + '|' + "199rkN341YPWfYqJfxMu1AWYM8ET5rjxEG";
-	// addr = ez0 + '|' + iz0;
-
-	$.ajax({
-	    url: 'https://blockchain.info/unspent',
-	    data: {"active": addr, "cors": true},
-	    success: function(data, status, XHR) { console.log(data); console.log(status); console.log(XHR); }
-	});
-	// When 500 error, it means no unspendable output;
-
 	for (var i =0; i < 5; i++) {
 	    var ez = echain.derive_child(i);
 	    var eza = ez.eckey.getBitcoinAddress().toString();
-	    var row = '<tr id="'+eza+'"><td>'+i+'</td><td class="address-field">'+eza+'</td><td>?</td><td>?</td></tr>';
+	    var row = '<tr id="'+eza+'"><td class="iterator">'+i+'</td><td class="address-field">'+eza+'</td><td class="balance">?</td><td class="txnum">?</td></tr>';
 	    $('#receive_table').append(row);
-	    console.log(row);
+	    addresses.receive[eza] = ez;
 	}
+	keys_receive = Object.keys(addresses.receive);
 	for (var i =0; i < 5; i++) {
 	    var iz = ichain.derive_child(i);
 	    var iza = iz.eckey.getBitcoinAddress().toString();
-	    var row = '<tr id="'+iza+'"><td class="iterator">'+i+'</td><td>'+iza+'</td><td class="balance">?</td><td class="txnum">?</td></tr>';
+	    var row = '<tr id="'+iza+'"><td class="iterator">'+i+'</td><td class="address-field">'+iza+'</td><td class="balance">?</td><td class="txnum">?</td></tr>';
 	    $('#change_table').append(row);
-	    console.log(row);
+	    addresses["change"][iza] = iz;
 	}
+	keys_change = Object.keys(addresses.change);
 
-    }
+	// $.ajax({
+	//     url: 'https://blockchain.info/multiaddr',
+	//     data: {"active": keys_receive.join("|"),
+	// 	   "cors": true,
+	// 	   "json": true},
+	//     success: function(data, status, XHR) { console.log(data); console.log(status); console.log(XHR); }
+	// });
+	// $.ajax({
+	//     url: 'https://blockchain.info/multiaddr',
+	//     data: {"active": keys_change.join("|"),
+	// 	   "cors": true,
+	// 	   "json": true},
+	//     success: function(data, status, XHR) { console.log(data); console.log(status); console.log(XHR); }
+	// });
+	updateBalances();
+    };
 
     function onInput(id, func) {
         $(id).bind("input keyup keydown keypress change blur", function() {
@@ -227,7 +267,7 @@ var createtx = function() {
         $(id).bind("focus", function() {
             jQuery.data(this, "lastvalue", $(this).val());
         });
-    }
+    };
 
     var onUpdateSourceKey = function () {
 	var source_key = $("#bip32_source_key").val();
