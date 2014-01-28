@@ -18,6 +18,7 @@ var GAP = 5;  // how many extra addresses to generate
     var unspent = {};
     var lastone = {"receive": GAP, "change": GAP};
     var chains = {"receive": null, "change": null};
+    var usechange = 0;
 
     var clearData = function() {
 	key = null;
@@ -27,7 +28,8 @@ var GAP = 5;  // how many extra addresses to generate
 	pending = 0;
 	unspent = {};
 	lastone = {"receive": GAP, "change": GAP};
-	var chains = {"receive": null, "change": null};
+	chains = {"receive": null, "change": null};
+	usechange = 0;
 
 	$("#receive_table").find("tr").remove();
 	$("#change_table").find("tr").remove();
@@ -271,6 +273,10 @@ var createtx = function() {
 		var newlast = Math.max(index+GAP+1, lastone[chain]);
 		lastone[chain] = newlast;
 		queue.append(generateAddress(chain, index+1));
+
+		if (chain === 'change') {
+		    usechange = index+1;
+		}
 
 		var jqxhr2 = $.get('https://blockchain.info/unspent',
 			      {"active": addr,
