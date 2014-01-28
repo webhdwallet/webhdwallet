@@ -5,10 +5,14 @@ var MAINNET_PRIVATE = 0x0488ade4;
 var TESTNET_PUBLIC = 0x043587cf;
 var TESTNET_PRIVATE = 0x04358394;
 
+var RECEIVE_CHAIN = 0;
+var CHANGE_CHAIN = 1;
+
     var key = null;
     var network = null;
     var addresses = null;
     var balance = 0;
+    var pending = 0;
     var unspent = {};
 
     var clearData = function() {
@@ -231,8 +235,8 @@ var createtx = function() {
 	if (key.depth != 1) {
 	    alert("Non-standard key depth: should be 1, and it is "+key.depth+", are you sure you want to continue?");
 	}
-	echain = key.derive_child(0);
-	ichain = key.derive_child(1);
+	echain = key.derive_child(RECEIVE_CHAIN);
+	ichain = key.derive_child(CHANGE_CHAIN);
 
 	for (var i =0; i < 5; i++) {
 	    var ez = echain.derive_child(i);
