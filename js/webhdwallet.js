@@ -226,7 +226,7 @@ var createtx = function() {
 	for (var i =0; i < 5; i++) {
 	    var ez = echain.derive_child(i);
 	    var eza = ez.eckey.getBitcoinAddress().toString();
-	    var row = '<tr id="'+eza+'"><td class="iterator">'+i+'</td><td class="address-field">'+eza+'</td><td class="balance">?</td><td class="txnum">?</td></tr>';
+	    var row = '<tr id="'+eza+'"><td class="iterator">'+i+'</td><td class="address-field">'+eza+' <span class="open-qroverlay glyphicon glyphicon-qrcode" data-toggle="modal" data-target="#qroverlay" data-addr="'+eza+'"></span></td><td class="balance">?</td><td class="txnum">?</td></tr>';
 	    $('#receive_table').append(row);
 	    addresses.receive[eza] = ez;
 	}
@@ -240,20 +240,6 @@ var createtx = function() {
 	}
 	keys_change = Object.keys(addresses.change);
 
-	// $.ajax({
-	//     url: 'https://blockchain.info/multiaddr',
-	//     data: {"active": keys_receive.join("|"),
-	// 	   "cors": true,
-	// 	   "json": true},
-	//     success: function(data, status, XHR) { console.log(data); console.log(status); console.log(XHR); }
-	// });
-	// $.ajax({
-	//     url: 'https://blockchain.info/multiaddr',
-	//     data: {"active": keys_change.join("|"),
-	// 	   "cors": true,
-	// 	   "json": true},
-	//     success: function(data, status, XHR) { console.log(data); console.log(status); console.log(XHR); }
-	// });
 	updateBalances();
     };
 
@@ -274,6 +260,19 @@ var createtx = function() {
 	useNewKey(source_key);
     }
 
+    $(document).on("click", ".open-qroverlay", function () {
+	var myAddress = $(this).data('addr');
+	console.log("-->"+myAddress);
+	$("#qraddr").text( myAddress );
+
+	var qrCode = qrcode(5, 'H');
+        var text = "bitcoin:"+myAddress;
+        text = text.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+        qrCode.addData(text);
+        qrCode.make();
+        $('#genAddrQR').html(qrCode.createImgTag(4));
+
+    });
 
     $(document).ready(function() {
 
