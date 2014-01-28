@@ -26,7 +26,8 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-	<li class="active"><a href="#">Home</a></li>
+	<li class="active"><a href="#bip32" data-toggle="tab">Home</a></li>
+	<li><a href="#help" data-toggle="tab">Help</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </nav>
@@ -42,7 +43,6 @@
 	<form action="/" class="form-horizontal" method="get">
 	  <fieldset>
             <legend>HD wallet manager</legend>
-
 	    <div class="form-group" title="">
               <label class="col-lg-2 control-label" for="bip32_source_key">BIP32 Extended Key</label>
               <div class="col-lg-10">
@@ -53,7 +53,6 @@
 		</div>
               </div>
             </div>
-
             <div class="form-group">
               <label class="col-lg-2 control-label" for="bip32_key_info">Key Info</label>
               <div class="col-lg-10">
@@ -63,62 +62,80 @@
                   </div>
                 </div>
               </div>
-
-
 	  </fieldset>
 	</form>
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Balance found</h3>
+	  </div>
+	  <div class="panel-body">
+	    <span id="balance_display">?</span> mBTC
+	  </div>
+	</div>
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Send payment</h3>
+	  </div>
+	  <div class="panel-body">
+	    ... in development ...
+	  </div>
+	</div>
+
+
+	<div class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">Receiving Addresses</div>
+	  <div class="panel-body">
+	    <p>Receiving addresses are the addresses found on the external address chain (i.e. <span style="font-family:monospace">m/i'/0/k</span> in BIP32 terminology).
+	      These should be used to to give to other people, where they can send payments.</p>
+	  </div>
+
+	  <!-- Table -->
+	  <table class="table">
+	    <thead>
+	      <th>#</th>
+	      <th>Address</th>
+	      <th>Balance(mBTC)</th>
+	      <th>Tx#</th>
+	    </thead>
+	    <tbody id="receive_table">
+	    </tbody>
+	  </table>
+	</div>
+
+	<div class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">Change Addresses</div>
+	  <div class="panel-body">
+	    <p>Change addresses are the addresses found on the internal address chain (i.e. <span style="font-family:monospace">m/i'/1/k</span> in BIP32 terminology).
+	      These should be used just by the wallet software (e.g. this page) to generate new address every time you have change from
+	      an outgoing transaction. Should not use them directly.</p>
+	  </div>
+
+	  <!-- Table -->
+	  <table class="table">
+	    <thead>
+	      <th>#</th>
+	      <th>Address</th>
+	      <th>Balance(mBTC)</th>
+	      <th>Tx#</th>
+	    </thead>
+	    <tbody id="change_table">
+	    </tbody>
+	  </table>
+	</div>
+	</div>
+
+	<div class="tab-pane fade" id="help">
+	  <div class="panel panel-default">
+	    <div class="panel-body">
+	      Some help and explanation will come here.
+	    </div>
+	  </div>
+	</div>
       </div>
-    </div>
-
-<div class="panel panel-default">
-  <div class="panel-body">
-    Total balance found: <span id="balance_display">?</span> mBTC  <!-- <button class="btn">Refresh</button> -->
-  </div>
-</div>
-
-<div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">Receiving Addresses</div>
-  <div class="panel-body">
-    <p>Receiving addresses are the addresses found on the external address chain (i.e. <span style="font-family:monospace">m/i'/0/k</span> in BIP32 terminology).
-    These should be used to to give to other people, where they can send payments.</p>
-  </div>
-
-  <!-- Table -->
-  <table class="table">
-    <thead>
-      <th>#</th>
-      <th>Address</th>
-      <th>Balance(mBTC)</th>
-      <th>Tx#</th>
-    </thead>
-    <tbody id="receive_table">
-    </tbody>
-  </table>
-</div>
-
-<div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">Change Addresses</div>
-  <div class="panel-body">
-    <p>Change addresses are the addresses found on the internal address chain (i.e. <span style="font-family:monospace">m/i'/1/k</span> in BIP32 terminology).
-    These should be used just by the wallet software (e.g. this page) to generate new address every time you have change from
-    an outgoing transaction. Should not use them directly.</p>
-  </div>
-
-  <!-- Table -->
-  <table class="table">
-    <thead>
-      <th>#</th>
-      <th>Address</th>
-      <th>Balance(mBTC)</th>
-      <th>Tx#</th>
-    </thead>
-    <tbody id="change_table">
-    </tbody>
-  </table>
-</div>
-
 <!--     <input></input> -->
 <!--     <button onclick="generate()">Generate addresses</button> -->
 <!--     <button onclick="createtx()">Create Transaction</button> -->
