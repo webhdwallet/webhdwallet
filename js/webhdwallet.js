@@ -11,6 +11,19 @@ var TESTNET_PRIVATE = 0x04358394;
     var balance = 0;
     var unspent = {};
 
+    var clearData = function() {
+	key = null;
+	network = null;
+	addresses = {"receive": {},  "change": {}};
+	balance = 0;
+	pending = 0;
+	unspent = {};
+
+	$("#receive_table").find("tr").remove();
+	$("#change_table").find("tr").remove();
+	$("#balance_display").text('?');
+    }
+
 var ops = Bitcoin.Opcode.map;
 
 var getAddr = function(key) {
@@ -175,11 +188,9 @@ var createtx = function() {
     var useNewKey = function(source_key) {
 	var keylabel = "";
 	var networklabel = "";
-	addresses = {"receive": {},  "change": {}};
-	unspent = {};
-	balance = 0;
-	$("#receive_table").find("tr").remove();
-	$("#change_table").find("tr").remove();
+
+	clearData();
+
 	try {
 	    key = new BIP32(source_key);
 	} catch(e) {
