@@ -133,6 +133,13 @@ var valueFromNumber = function(number) {
     return value;
 }
 
+var valueFromSatoshi = function(number) {
+    var value = BigInteger.valueOf(number);
+    value = value.toByteArrayUnsigned().reverse();
+    while (value.length < 8) value.push(0);
+    return value;
+}
+
 var createtx = function() {
     var intx = "1197be06096230bf4b8e4de121607dd797c60df60545eda8d90b7f876f24694e";
     in0 = b.derive_child(1)
@@ -198,7 +205,6 @@ var createtx = function() {
 
     var goodUpdate = function(addr) {
     	return function(data, textStatus, jqXHR) {
-    	    console.log(addr);
     	    unspent[addr] = data.unspent_outputs;
     	    thisbalance = 0;
     	    thispending = 0;
@@ -210,8 +216,8 @@ var createtx = function() {
     		}
     	    }
     	    balance += thisbalance;
-    	    $("#balance_display").text(balance/100000); // Satoshi to mBTC
-    	    $("#"+addr).children(".balance").text(thisbalance/100000);
+    	    $("#balance_display").text(balance/100000000); // Satoshi to BTC
+    	    $("#"+addr).children(".balance").text(thisbalance/100000000);
     	};
     }
     var noUpdate = function(addr) {
@@ -248,13 +254,11 @@ var createtx = function() {
 	    unspent[addr] = data.unspent_outputs;
 	    thisbalance = 0
 	    for (var x=0; x < unspent[addr].length; x++) {
-		console.log(unspent[addr]);
 		thisbalance += unspent[addr][x].value;
 	    }
 	    balance += thisbalance;
-	    $("#balance_display").text(balance/100000); // Satoshi to mBTC
-	    $("#"+addr).children(".balance").text(thisbalance/100000);
-	    console.log($('#'+addr).children(".balance"));
+	    $("#balance_display").text(balance/100000000); // Satoshi to mBTC
+	    $("#"+addr).children(".balance").text(thisbalance/100000000);
 	};
     }
     var gotUnspentError = function(chain, index, addr) {
@@ -288,7 +292,7 @@ var createtx = function() {
 		    .always(function(){});
 		callback();
     	    } else {
-		$("#balance_display").text(balance/100000); // Satoshi to mBTC
+		$("#balance_display").text(balance/100000000); // Satoshi to mBTC
 		$("#"+addr).children(".balance").text(0);
 		if (index < lastone[chain]-1) {
 		    queue.append(generateAddress(chain, index+1));
@@ -327,7 +331,101 @@ var generateAddress = function(chain, index) {
 }
 
     var genTransaction = function() {
-	console.log(balance)
+	if (balance > 0) {
+	    var receiver = $("#receiver_address").val()
+	    var amount = Math.ceil(parseFloat($("#receiver_monies").val())*100000000);
+	    var fee = Math.ceil(parseFloat($("#fee_monies").val())*100000000);
+	    if (!(amount > 0)) {
+		console.log("Nothing to do");
+	    }
+	    if (!(fee >= 0)) {
+		fee = 0;
+	    }
+	    var target = amount + fee;
+	    if (target > balance) {
+		alert("Not enough money yo!");
+		return
+	    } else {
+		// prepare inputs
+		var incoin = [];
+		for (var k in unspent) {
+		    var u = unspent[k];
+		    for (var i = 0; i < u.length; i++) {
+			var ui = u[i]
+			var coin = {"hash": ui.tx_hash, "age": ui.confirmations, "address": k, "coin": ui};
+			incoin.push(coin);
+		    }
+		}
+		var sortcoin = _.sortBy(incoin, function(c) { return c.age; });
+
+		inamount = 0;
+		var tx = new Bitcoin.Transaction();
+
+		var toaddr = new Bitcoin.Address(receiver);
+		var to = new Bitcoin.TransactionOut({
+		    value: valueFromSatoshi(amount),
+		    script: Bitcoin.Script.createOutputScript(toaddr)
+		});
+		tx.addOutput(to);
+
+		var usedkeys = []
+		for (var i = 0; i < sortcoin.length; i++) {
+		    var coin = sortcoin[i].coin;
+		    var tin = new Bitcoin.TransactionIn({
+			outpoint: {
+			    hash: Bitcoin.Util.bytesToBase64(Bitcoin.Util.hexToBytes(coin.tx_hash)), // no .reverse()!
+			    index: coin.tx_output_n
+			},
+			script: Bitcoin.Util.hexToBytes(coin.script),
+			sequence: 4294967295
+		    });
+		    tx.addInput(tin);
+		    inamount += coin.value;
+		    usedkeys.push(sortcoin[i].address);
+
+		    if (inamount >= target) {
+			break;
+		    }
+		}
+
+		if (inamount > target) {
+		    var changeaddr = chains['change'].derive_child(usechange).eckey.getBitcoinAddress();
+		    var ch = new Bitcoin.TransactionOut({
+			value: valueFromSatoshi(inamount-target),
+			script: Bitcoin.Script.createOutputScript(changeaddr)
+		    });
+		    tx.addOutput(ch);
+		}
+
+		if (key.has_private_key) {
+		    for (var i = 0; i < usedkeys.length; i++) {
+			k = usedkeys[i];
+			var inchain = null;
+			if (k in addresses['receive']) {
+			    inchain = addresses['receive'];
+			} else if (k in addresses['change']) {
+			    inchain = addresses['change'];
+			}
+			if (inchain) {
+			    tx.signWithKey(inchain[k].eckey);
+			} else {
+			    console.log("Don't know about all the keys needed.");
+			}
+		    }
+		    $("#signedtxlabel").show()
+		    $("#unsignedtxlabel").hide()
+		    $("#submit_signed_transaction").removeAttr('disabled');
+		} else {
+		    $("#unsignedtxlabel").show()
+		    $("#signedtxlabel").hide()
+		    $("#submit_signed_transaction").attr('disabled', true);
+		}
+		$("#output_transaction").val(Bitcoin.Util.bytesToHex(tx.serialize()));
+
+		return tx;
+
+	    }
+	}
     }
 
     var useNewKey = function(source_key) {

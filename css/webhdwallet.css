@@ -11,6 +11,11 @@ hidden {
     display: none;
 }
 
+#balance_display {
+    font-style: monospace;
+    font-size: large;
+}
+
 .col-lg-2 {
     width: 18%;
 }
