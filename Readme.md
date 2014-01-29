@@ -16,6 +16,8 @@ for the web.
 * [Balance request example](http://blockexplorer.com/testnet/q/getreceivedbyaddress/mm9tSEqahzfDVkPtgsSiA4FmuqRMFdi8XE)
 * [Address info example](http://blockexplorer.com/testnet/address/mm9tSEqahzfDVkPtgsSiA4FmuqRMFdi8XE)
 * [BTCLook Testnet](http://testnet.btclook.com)
+* [BTCMerch Sandbox](http://sandbox.btcmerch.com/)
+* [Biteasy](https://www.biteasy.com/developers)
 
 ### Javascript Bitcoin manipulation
 
