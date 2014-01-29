@@ -192,7 +192,24 @@
 	<div class="tab-pane fade" id="help">
 	  <div class="panel panel-default">
 	    <div class="panel-body">
-	      Some help and explanation will come here.
+	      <h3>The hierarchy</h3>
+	      <p>
+		This web wallet implements the recommended hierarchy from the original BIP32 proposal. As shown on the diagram below, a master extended key is used to create a number of child nodes which will be "Accounts". Each of the accounts have their own extended private and public key. The web wallet uses those extended keys from this frist derivation. Wallet chains and addresses follow as in the diagram.
+		<img src="img/derivation.png">
+	      </p>
+	      <h3>How to generate suitable BIP32 keys</h3>
+
+	      <p>You can use <a href="http://bip32.org">BIP32.org</a> (either online of offline), or other Bitcoin utilities that implement BIP32, such as the <a href="https://github.com/richardkiss/pycoin">pycoin</a> library. For simplicity, the BIP32.org way is shown here.</p>
+              <p>
+		On BIP32.org, can use a strong passphrase, or a random string from a trusted source of randomness to generate the "BIP32 Extended Key". Save this key, and protect it well, as it is used to generate all the possible addresses belonging to this account.
+		<img src="img/generate_key1.jpg">
+	      </p>
+
+	      <p>Further down the page, find the "Derivation Path" dropdown. Choose "Custom", and type in "<span style="font-style:monospace">m/i'</span>". The prime means "private derivation", which is recommended for these top level accounts as mentioned in the original document. Choose a number for "Keypair Index (i)". It can simply be 0 for the first wallet (and all related addresses) that you want to use, e.g. one of your projects, or one branch of a chainstore, then 1 for the second, and so on. As long as you remember the number, it doesn't matter what do you choose.</p>
+	      <p><img src="img/generate_key2.jpg"></p>
+	      <p>From here, <strong>save the extended private key, and extended public key</strong>. You will have to enter one of these into the web wallet. You can use the extended public key to query the funds in your wallet, without being able to spend it. <strong>Keep the extended private key secure</strong>, as that gives total access to your wallet and lets on spend the funds within.
+	      </p>
+
 	    </div>
 	  </div>
 	</div>
