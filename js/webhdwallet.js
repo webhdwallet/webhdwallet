@@ -323,7 +323,14 @@ var generateAddress = function(chain, index) {
 	    $('#'+chain+'_table').append(row);
 	    addresses[chain][childaddr] = childkey;
 
-	    updateBalance (chain, index, childaddr, callback);
+	    if (navigator.onLine) {
+		updateBalance (chain, index, childaddr, callback);
+	    } else {
+		if (index < lastone[chain]-1) {
+		    queue.append(generateAddress(chain, index+1));
+		}
+		callback();
+	    }
 	} else {
 	    callback();
 	}
