@@ -446,35 +446,36 @@ var generateAddress = function(chain, index) {
 	} catch(e) {
 	    console.log(source_key);
 	    console.log("Incorrect key?");
+	    return;
 	}
-	if (key) {
-	    switch (key.version) {
-	    case MAINNET_PUBLIC:
-		keylabel = "Public key";
-		network = 'prod';
-		networklabel = "Bitcoin Mainnet";
-		break;
-	    case MAINNET_PRIVATE:
-		keylabel = "Private key";
-		network = 'prod';
-		networklabel = "Bitcoin Mainnet";
-		break;
-	    case TESTNET_PUBLIC:
-		keylabel = "Public key";
-		network = 'test';
-		networklabel = "Bitcoin Testnet";
-		break;
-	    case TESTNET_PRIVATE:
-		keylabel = "Private key";
-		network = 'test';
-		networklabel = "Bitcoin Testnet";
-		break;
-	    default:
-		key = null;
-		console.log("Unknown key version");
-	    }
-	    Bitcoin.setNetwork(network);
+
+	switch (key.version) {
+	case MAINNET_PUBLIC:
+	    keylabel = "Public key";
+	    network = 'prod';
+	    networklabel = "Bitcoin Mainnet";
+	    break;
+	case MAINNET_PRIVATE:
+	    keylabel = "Private key";
+	    network = 'prod';
+	    networklabel = "Bitcoin Mainnet";
+	    break;
+	case TESTNET_PUBLIC:
+	    keylabel = "Public key";
+	    network = 'test';
+	    networklabel = "Bitcoin Testnet";
+	    break;
+	case TESTNET_PRIVATE:
+	    keylabel = "Private key";
+	    network = 'test';
+	    networklabel = "Bitcoin Testnet";
+	    break;
+	default:
+	    key = null;
+	    console.log("Unknown key version");
 	}
+
+	Bitcoin.setNetwork(network);
 	$("#bip32_key_info_title").text(keylabel);
 	$("#network_label").text(networklabel);
 
