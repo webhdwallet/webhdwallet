@@ -1,0 +1,84 @@
+==================================================================
+https://keybase.io/imrehg
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://webhdwallet.github.io
+  * I am imrehg (https://keybase.io/imrehg) on keybase.
+  * I have a public key with fingerprint B82F C4C2 213C 7CAC EB17  E59C 5CF8 E50C 793D 209B
+
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "client": {
+            "name": "keybase.io node.js client",
+            "version": "0.7.2"
+        },
+        "key": {
+            "fingerprint": "b82fc4c2213c7caceb17e59c5cf8e50c793d209b",
+            "host": "keybase.io",
+            "key_id": "5CF8E50C793D209B",
+            "uid": "0aa5eae8fed401430438fa883d789200",
+            "username": "imrehg"
+        },
+        "merkle_root": {
+            "ctime": 1416189837,
+            "hash": "036092636d95fc92fe708a0ba82dc1b3e6b6896fb8ab30e5a526858f4c732a2497b85211fc5683247585138278bbdc0db0afb954757cc57e861c02d96870b759",
+            "seqno": 96049
+        },
+        "service": {
+            "hostname": "webhdwallet.github.io",
+            "protocol": "https:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1416190012,
+    "expire_in": 157680000,
+    "prev": "574803e537aa071d9fc7303527261bcd734911ed893810040932d5b1fe88a5c7",
+    "seqno": 16,
+    "tag": "signature"
+}
+
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2
+
+owFVk3tsFEUcx4/SKr3SlmdSRIRblNIC5+zOzu5sI9Vy12ICRaNEKAGu+5i92z5u
+j90tWB4KKATogSDFBxSUQgFTobQnjYimSIIgNRDkUR6SIOWR0taEIshLcBdqxPlr
+Hp/5/n7f329mdXJPV68enoK2y0PwV+09mtsk12Rtas48StKVciprHiWXaCRsObOw
+WEqoLKqYlEuiSbyaPiysK8RbZA7rZkZTs4lhanrYpoCX9zLUgtEO7lxWtXCQGBFD
+c7QoCTOqzMoMQ0OZl0WZSDRPkCAjWcUEAZkXoMIAQbIlQ7pp/S8q9VgzoCn2LvLl
+4VwEfDbvt/lx9lnZ4wMgioiIBKtEYQHNQsBCrIoYQ4XHAgOAA5rE6LaklRokFHSy
+LSVGcQkJGLr+2LJsaQ5AszRHYwFD3s5HNENOAMgBgeEgpwhIlQVGJTzAIpBEzCgy
+LUHCSRwWOFXCogQBQSJiOIywyso8ZESGFXgJI4amVRlxGDIsjzCiIWZ4LEmKDBQJ
+iKokIHufl2XEE8zRMmAUgcM8kHgk2AZMMiusU1kCB1hhgbM0ZmsycdJ2atZtbQ6R
+QsocsaSEWN6gZoXKpCcljBi6pct6iY2ELCtiZjnurfII2fPkUqBbLiBpYcXu3dPN
+pW306coIANDMaIq8G9EMEtAcAvEcBvZwApHZTqd4FgNIEORFEfC0Iqh2IQBEDM9w
+tCQrPGQFmiYKFiCmAWCBABkFSbRKMBaRzP/nl+bsRMWgrWlqwbBolRmEWrA8bn68
+q0cvl5oQ5zzfwICFLnt4XSM10ywjxhg1YrwW1i3Rsg2YXj1CwpFgxKtqqhUK6YZJ
+SsWwN0wsVvBDyAI/gHk068v1cbk+P2JYjqGRkCvksrQf4hwhd5zLndjn3z8za3jq
+Q2gZaTGtbOdQozKQf7xi0UxtiOuX6tR9B2uzV3z54o9526c0rx8/Cz6Kkc5HLyQ/
+m9yY7xkx6lJ9wYiNx0LRsxOrvYPU8vRpWzdOOre3f+vcs6nZaXVp0f0jz6SA3odQ
+wacNw/e19l2V3GEeTSscvupvX/vS0x7LGJORVHHl5qlY80AhqSsvu2Zt/r0DBavT
+/yItA5nFFxem/Db9YnbnlvoTNzevKGq/tKlh7tDAlfyq5aYZfX3/id5Xr+9Jv3Z7
+VGNhhv9uYtL4z39es/7XNO7Bqy27Wvq4H75x5P7p7RurDzVlnlSmbwjIVZ+03lvY
+YCYFaspXhu4OWtH1Xfu9GQP6bWu50dJZcbTzQWLwQTA91jj4stIxtDju7Ywjnik1
+hRvApK4JOZu2TE0pb432Wio9f+7OF/veaRxWRQ4+uvPS4fNu8djmdSl7R1V+f+1u
+yu5U77exxpfb/py/373rs4eeseeymprTaoPx63b88c1PHRWHQSxhJnNwZUVlcMR7
+H7aMqarr0zW3a+apafSNfksuFLUltPrPDN45ftviDYVV6VeNzFNb32wNdWwvq0tf
+FLs1rzg6OaMYdY3l18R74nPg77UfRH945faE+wcuNJ0+e6LoOiiMu7Wkr/v4R3ca
+pzc9N8Pz1o6vz5+srVu2a2zNx5k991w4Wrw54eKqM5s6b12O1jf4qt3LqbVLd0+s
+fOaA1b/+ffc/
+=m4r3
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/imrehg
+
+==================================================================
