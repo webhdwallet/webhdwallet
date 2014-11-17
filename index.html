@@ -210,6 +210,15 @@
 	      <p>From here, <strong>save the extended private key, and extended public key</strong>. You will have to enter one of these into the web wallet. You can use the extended public key to query the funds in your wallet, without being able to spend it. <strong>Keep the extended private key secure</strong>, as that gives total access to your wallet and lets on spend the funds within.
 	      </p>
 
+	      <h3>Example</h3>
+	      <p>The one that should go in is the "wallet/account" level, which is "depth=1" keys (or m/i) accounts. After that the generated addresses are external and internal wallet chains (m/i/0/j and m/i/1/k) respectively.</p>
+
+	      <p>My testing extended public key is for example: <pre>xpub69i6TTB6JU2mwcQ7pKeDG8aAMnc2AZ2UdpuphoNak4nT4UTWYhkSGqpDgbGjHGbxYVK8jNF4eXMRk1aeGweLxiCWWB5EjKm3k6YMKoWN5VT</pre></p>
+
+	      <p>If you plug it into <a href="http://bip32.org">bip32.org</a>, it will show "depth=1" (meaning it's one of the m/i keys). Then go to the derivation path section, and choose "custom", because we are not working with the "master node", but one of the childs, so this m/i key will be the new m for the purpose of the derivation! So when trying to get the first external address m/i/0/0 becomes m/0/0 because of the change of base.</p>
+
+	      <p>Then for first receiving address for this public key, m/0/0, can compare both the bip32.org and the webhdwallet to correctly give <span class="address-field">16p6ojeBcaELVJrXNmstA2Sv2Koi8zXfds</span>, and for the first change m/1/0 they both give <span class="address-field">1D5CKrqtbnsTdSTggr6um5eM17LoMyKdAC</span>.</p>
+
 	    </div>
 	  </div>
 	</div>
