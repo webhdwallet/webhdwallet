@@ -5,7 +5,7 @@ for the web.
 
 ## Ingredients
 
-* BIP32 maniuplation from [BIP32.org][bip32org]
+* BIP32 manipulation from [BIP32.org][bip32org]
 
 ## Dev notes and links
 
